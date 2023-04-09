@@ -1,10 +1,14 @@
 package ru.kata.spring.boot_security.demo.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "roles")
@@ -14,8 +18,17 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", unique = true)
+    @Column(name = "name", unique = true)
     private String name;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
+    @JoinTable(
+            name = "authorities_roles",
+            joinColumns = @JoinColumn(
+                    name = "roles_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "authority_id", referencedColumnName = "id"))
+    Collection<Authority> authorities = new ArrayList<>();
 
     public Role() {
     }
@@ -43,6 +56,10 @@ public class Role implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return name;
+    }
+
+    public void setAuthorities(Collection<Authority> authorities) {
+        this.authorities = authorities;
     }
 
     @Override

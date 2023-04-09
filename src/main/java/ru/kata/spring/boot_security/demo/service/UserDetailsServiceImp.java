@@ -1,29 +1,30 @@
 package ru.kata.spring.boot_security.demo.service;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import ru.kata.spring.boot_security.demo.security.Details;
 
-@Service("myUserDetailsService")
+import java.util.Optional;
+
+@Service("userDetailService")
 public class UserDetailsServiceImp implements UserDetailsService {
+    private final UserRepository userRepo;
 
-    private UserService userService;
-
-    public UserDetailsServiceImp(UserService userService) {
-        this.userService = userService;
+    @Autowired
+    public UserDetailsServiceImp(UserRepository userRepo) {
+        this.userRepo = userRepo;
     }
 
     @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByUsername(username);
-
-        if (user == null) {
-            throw new UsernameNotFoundException(String.format("User '%s' not found", username));
+    public Details loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userRepo.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("No such user");
         }
-        return new User(user.getUsername(), user.getPassword(), user.getRoles());
+        return new Details(user.get());
     }
 }

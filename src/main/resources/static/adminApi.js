@@ -8,13 +8,10 @@ const editUserForm = document.userEditForm
 
 const usersTableTemplate = {
     0: "ID",
-    1: "First Name",
-    2: "Last Name",
-    3: "Age",
-    4: "Email",
-    5: "Role",
-    6: "Edit",
-    7: "Delete"
+    1: "Username",
+    2: "Role",
+    3: "Edit",
+    4: "Delete"
 }
 
 const userFetch = {
@@ -46,14 +43,14 @@ async function updateCurrentUserInfo() {
         username.insertAdjacentText("afterbegin", user.username)
         roles.insertAdjacentText("beforeend", user.roles.map(role => " " + role.name))
 
-            if (!userInfo.hasChildNodes()) {
-                userInfo.appendChild(username)
-                userInfo.appendChild(text)
-                userInfo.appendChild(roles)
-            } else {
-                userInfo.firstChild.replaceWith(username)
-                userInfo.lastChild.replaceWith(roles)
-            }
+        if (!userInfo.hasChildNodes()) {
+            userInfo.appendChild(username)
+            userInfo.appendChild(text)
+            userInfo.appendChild(roles)
+        } else {
+            userInfo.firstChild.replaceWith(username)
+            userInfo.lastChild.replaceWith(roles)
+        }
     })
 }
 
@@ -87,7 +84,7 @@ function showUserPanel() {
         let tblBodyRow = tblBody.insertRow()
 
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             let th = document.createElement("th")
             let text = document.createTextNode(usersTableTemplate[i])
             th.appendChild(text)
@@ -95,9 +92,6 @@ function showUserPanel() {
         }
 
         tblBodyRow.insertCell().appendChild(document.createTextNode(user.id))
-        tblBodyRow.insertCell().appendChild(document.createTextNode(user.firstName))
-        tblBodyRow.insertCell().appendChild(document.createTextNode(user.lastName))
-        tblBodyRow.insertCell().appendChild(document.createTextNode(user.age))
         tblBodyRow.insertCell().appendChild(document.createTextNode(user.username))
         tblBodyRow.insertCell().appendChild(document.createTextNode(user.roles.map(role => role.name)))
     })
@@ -127,7 +121,7 @@ async function showAdminPanel() {
     let tblHeadRow = tblHead.insertRow()
 
     // Filling table head
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 5; i++) {
         let th = document.createElement("th")
         let text = document.createTextNode(usersTableTemplate[i])
         th.appendChild(text)
@@ -157,9 +151,6 @@ async function showAdminPanel() {
 
                 let tblBodyRow = tblBody.insertRow()
                 tblBodyRow.insertCell().appendChild(document.createTextNode(user.id))
-                tblBodyRow.insertCell().appendChild(document.createTextNode(user.firstName))
-                tblBodyRow.insertCell().appendChild(document.createTextNode(user.lastName))
-                tblBodyRow.insertCell().appendChild(document.createTextNode(user.age))
                 tblBodyRow.insertCell().appendChild(document.createTextNode(user.username))
                 tblBodyRow.insertCell().appendChild(document.createTextNode(user.roles.map(roles => " " + roles.name)))
                 tblBodyRow.insertCell().appendChild(editButton)
@@ -178,10 +169,7 @@ function addNewUser() {
     console.log("Работает метод addNewUser")
 
     let user = {
-        firstName: addUserForm.addFirstName.value,
-        lastName: addUserForm.addLastName.value,
-        age: addUserForm.addAge.value,
-        username: addUserForm.addEmail.value,
+        username: addUserForm.addUsername.value,
         password: addUserForm.addPassword.value,
         roles: []
     }
@@ -194,11 +182,11 @@ function addNewUser() {
                 id: 0,
                 name: ""
             }
-            if (name === "ADMIN") {
+            if (name === "ROLE_ADMIN") {
                 role.id = 1
                 role.name = "ADMIN"
             }
-            if (name === "USER") {
+            if (name === "ROLE_USER") {
                 role.id = 2
                 role.name = "USER"
             }
@@ -208,10 +196,7 @@ function addNewUser() {
     console.log(user)
 
     userFetch.createUser(user).then((response) => {
-        document.getElementById('addFirstName').value = ""
-        document.getElementById('addLastName').value = ""
-        document.getElementById('addAge').value = ""
-        document.getElementById('addEmail').value = ""
+        document.getElementById('addUsername').value = ""
         document.getElementById('addPassword').value = ""
         document.getElementById('addRoles').value = ""
         if (response.ok) {
@@ -232,9 +217,6 @@ function showEditUserForm(id) {
             res.json().then((user) => {
                 console.log(user)
                 $("#editId").val(user.id)
-                $("#editFirstName").val(user.firstName)
-                $("#editLastName").val(user.lastName)
-                $("#editAge").val(user.age)
                 $("#editUsername").val(user.username)
                 $("#editPassword").val("")
             })
@@ -248,9 +230,6 @@ function showEditUserForm(id) {
 function editUser() {
     const user = {
         id: document.userEditForm.editId.value,
-        firstName: document.userEditForm.editFirstName.value,
-        lastName: document.userEditForm.editLastName.value,
-        age: document.userEditForm.editAge.value,
         username: document.userEditForm.editUsername.value,
         password: document.userEditForm.editPassword.value,
         roles: []
@@ -298,9 +277,6 @@ function showDeleteUserForm(id) {
             res.json().then((user) => {
                 console.log(user)
                 $("#deleteId").val(user.id)
-                $("#deleteFirstName").val(user.firstName)
-                $("#deleteLastName").val(user.lastName)
-                $("#deleteAge").val(user.age)
                 $("#deleteUsername").val(user.username)
                 $("#deletePassword").val("")
             })

@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.security.Details;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
@@ -22,34 +23,32 @@ public class AdminsController {
         this.roleService = roleService;
     }
 
-    @GetMapping
-    public String showUsersList(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    @GetMapping("")
+    public String showUsersList(@AuthenticationPrincipal Details userDetails, Model model) {
         model.addAttribute("usersList", userService.findAllUsers());
         model.addAttribute("userDetails", userDetails);
-        model.addAttribute("currentUser", userService.findByUsername(userDetails.getUsername()));
+        model.addAttribute("currentUser",  userDetails.getUser());
         model.addAttribute("roles", roleService.findAll());
         return "admin";
     }
 
     @GetMapping("/new")
-    public String showNewUserForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String showNewUserForm(@AuthenticationPrincipal Details userDetails, Model model) {
         model.addAttribute("userDetails", userDetails);
-        model.addAttribute("currentUser", userService.findByUsername(userDetails.getUsername()));
+        model.addAttribute("currentUser", userDetails.getUser());
         model.addAttribute("roles", roleService.findAll());
         model.addAttribute("user", new User());
         return "/new";
     }
 
-    @PostMapping ("/new")
-    public String saveNewUser(@ModelAttribute("user") User user, BindingResult result) {
-        if (result.hasErrors()) {
-            return "redirect:/new";
+    @PostMapping()
+    public String saveNewUser(@ModelAttribute("user") User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin";
         }
-        roleService.setUserRoles(user);
         userService.saveUser(user);
-        return "redirect:/admin";
+        return "redirect:admin";
     }
-
     @PatchMapping ("/edit/{id}")
     public String updateUser(@ModelAttribute("user") User user, BindingResult result) {
 

@@ -79,27 +79,11 @@
                                     <form id="addUserForm" class="text-center" name="addUserForm"
                                           onsubmit="return false;">
                                         <div class="form-group">
-                                            <label for="addFirstName" class="col-form-label">
-                                                <b>First Name:</b></label>
+                                            <label for="addUsername" class="col-form-label">
+                                                <b>Username:</b></label>
                                             <input type="text" class="form-control"
-                                                   id="addFirstName" placeholder="First Name" name="addFirstName"
+                                                   id="addUsername" placeholder="Username" name="addUsername"
                                                    value=""/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="addLastName" class="col-form-label"><b>Last Name:</b></label>
-                                            <input type="text" class="form-control"
-                                                   id="addLastName" placeholder="Last Name" name="addLastName"
-                                                   value=""/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="addAge" class="col-form-label"><b>Age:</b></label>
-                                            <input type="number" class="form-control"
-                                                   id="addAge" placeholder="Age" name="addAge" value=""/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="addEmail" class="col-form-label"><b>Email:</b></label>
-                                            <input type="email" class="form-control"
-                                                   id="addEmail" required placeholder="Email" name="addEmail" value=""/>
                                         </div>
                                         <div class="form-group">
                                             <label for="addPassword" class="col-form-label"><b>Password:</b></label>
@@ -150,38 +134,29 @@
                 <div class="modal-body">
                     <div class="container col-6 text-center">
                         <div class="form-group text-center">
-                                <label for="editId"><strong>ID</strong></label>
-                                <input type="text" class="form-control" name="editId" id="editId" value=""
-                                       readonly>
+                            <label for="editId"><strong>ID</strong></label>
+                            <input type="text" class="form-control" name="editId" id="editId" value=""
+                                   readonly>
 
-                                <label for="editFirstName"><strong>First name</strong></label>
-                                <input type="text" class="form-control" name="editFirstName" id="editFirstName">
+                            <label for="editUsername"><strong>Username</strong></label>
+                            <input type="text" class="form-control" name="editUsername" id="editUsername">
 
-                                <label for="editLastName"><strong>Last name</strong></label>
-                                <input type="text" class="form-control" name="editLastName" id="editLastName">
+                            <label for="editPassword"><strong>Password</strong></label>
+                            <input type="password" class="form-control" name="editPassword" id="editPassword" value="">
 
-                                <label for="editAge"><strong>Age</strong></label>
-                                <input type="number" class="form-control" name="editAge" id="editAge">
-
-                                <label for="editUsername"><strong>E-mail</strong></label>
-                                <input type="email" class="form-control" name="editUsername" id="editUsername">
-
-                                <label for="editPassword"><strong>Password</strong></label>
-                                <input type="password" class="form-control" name="editPassword" id="editPassword" value="">
-
-                                <label for="editRoles"><strong>Role</strong></label>
-                                <select class="form-control" name="editRoles" id="editRoles" size="2" multiple required>
-                                    <option value="ADMIN">ADMIN</option>
-                                    <option value="USER">USER</option>
-                                </select>
+                            <label for="editRoles"><strong>Role</strong></label>
+                            <select class="form-control" name="editRoles" id="editRoles" size="2" multiple required>
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="USER">USER</option>
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="submit-edit-user-btn"
                             value="Edit">Edit
                     </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>
@@ -204,17 +179,8 @@
                             <input type="text" class="form-control" name="deleteId" id="deleteId" value=""
                                    readonly>
 
-                            <label for="deleteFirstName"><strong>First name</strong></label>
-                            <input type="text" class="form-control" name="deleteFirstName" id="deleteFirstName" readonly>
-
-                            <label for="deleteLastName"><strong>Last name</strong></label>
-                            <input type="text" class="form-control" name="deleteLastName" id="deleteLastName" readonly>
-
-                            <label for="deleteAge"><strong>Age</strong></label>
-                            <input type="number" class="form-control" name="deleteAge" id="deleteAge" readonly>
-
-                            <label for="deleteUsername"><strong>E-mail</strong></label>
-                            <input type="email" class="form-control" name="deleteUsername" id="deleteUsername" readonly>
+                            <label for="deleteUsername"><strong>Username</strong></label>
+                            <input type="text" class="form-control" name="deleteUsername" id="deleteUsername" readonly>
 
                             <label for="deleteRoles"><strong>Role</strong></label>
                             <select class="form-control" name="deleteRoles" id="deleteRoles" size="2" multiple required readonly>
@@ -225,10 +191,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-danger" id="submit-delete-user-btn"
                             value="Delete" onclick="deleteUser()">Delete
                     </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>
@@ -240,6 +206,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
         crossorigin="anonymous"></script>
-<script type="application/javascript" src="adminApi.js" crossorigin="anonymous"></script>
+<script type="application/javascript" src="adminAPI.js" crossorigin="anonymous"></script>
 </body>
 </html>

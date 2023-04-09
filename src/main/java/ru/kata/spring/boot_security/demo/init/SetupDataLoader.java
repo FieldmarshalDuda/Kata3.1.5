@@ -1,81 +1,95 @@
 package ru.kata.spring.boot_security.demo.init;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.model.Authority;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleService;
-import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.repositories.AuthorityRepository;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
+import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
-import java.util.HashSet;
-import java.util.Set;
 
+import java.util.*;
 
 @Component
-public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
+public class SetupDataLoader implements
+        ApplicationListener<ContextRefreshedEvent> {
 
     boolean alreadySetup = false;
 
-    private UserService userService;
+    private final UserRepository userRepository;
 
-    private RoleService roleService;
+    private final RoleRepository roleRepository;
 
-    public SetupDataLoader(UserService userService, RoleService roleService) {
-        this.userService = userService;
-        this.roleService = roleService;
+    private final AuthorityRepository authorityRepository;
+    private final PasswordEncoder encoder;
+
+    @Autowired
+
+    public SetupDataLoader(AuthorityRepository authorityRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder) {
+        this.authorityRepository = authorityRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
     }
+
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        if (alreadySetup) {
+        if (alreadySetup)
             return;
-        }
+        Authority readAuthority
+                = createAuthorityIfNotFound("READ_PRIVILEGE");
+        Authority writeAuthority
+                = createAuthorityIfNotFound("WRITE_PRIVILEGE");
 
-        Role adminRole = createRoleIfNotFound("ADMIN");
-        Role userRole = createRoleIfNotFound("USER");
-
-        Set<Role> allRoles = new HashSet<>();
-        allRoles.add(adminRole);
-        allRoles.add(userRole);
-
-        Set<Role> userRoles = new HashSet<>();
-        userRoles.add(userRole);
-
-
-
+        List<Authority> adminAuthorities = Arrays.asList(
+                readAuthority, writeAuthority);
+        createRoleIfNotFound("ROLE_ADMIN", adminAuthorities);
+        createRoleIfNotFound("ROLE_USER", Collections.singletonList(readAuthority));
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+        Role userRole = roleRepository.findByName("ROLE_USER");
         User admin = new User();
-        admin.setFirstName("Leo");
-        admin.setLastName("Bonhart");
-        admin.setAge((byte) 25);
-        admin.setUsername("lb@mail.ru");
-        admin.setPassword("admin");
-        admin.setRoles(allRoles);
-
+        admin.setUsername("admin");
+        admin.setPassword(encoder.encode("admin"));
+        admin.setRoles(Set.of(adminRole, userRole));
+        userRepository.save(admin);
         User user = new User();
-        user.setFirstName("Joe");
-        user.setLastName("Louis");
-        user.setAge((byte) 33);
-        user.setUsername("jl@mail.ru");
-        user.setPassword("user");
-        user.setRoles(userRoles);
-
-        userService.saveUser(admin);
-        userService.saveUser(user);
+        user.setUsername("user");
+        user.setPassword(encoder.encode("user"));
+        user.setRoles(Set.of(userRole));
+        userRepository.save(user);
 
         alreadySetup = true;
     }
 
     @Transactional
-    Role createRoleIfNotFound(String name) {
+    Authority createAuthorityIfNotFound(String name) {
 
-        Role role = roleService.findByName(name);
+        Authority authority = authorityRepository.findByName(name);
+        if (authority == null) {
+            authority = new Authority(name);
+            authorityRepository.save(authority);
+        }
+        return authority;
+    }
+
+    @Transactional
+    Role createRoleIfNotFound(
+            String name, Collection<Authority> authorities) {
+
+        Role role = roleRepository.findByName(name);
         if (role == null) {
             role = new Role(name);
-            roleService.save(role);
+            role.setAuthorities(authorities);
+            roleRepository.save(role);
         }
         return role;
     }

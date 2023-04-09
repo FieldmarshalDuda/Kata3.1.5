@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class RoleServiceImp implements RoleService {
 
     private final RoleRepository roleRepository;
@@ -20,6 +19,7 @@ public class RoleServiceImp implements RoleService {
     }
 
     @Override
+    @Transactional
     public void save(Role role) {
         roleRepository.save(role);
     }
@@ -30,12 +30,13 @@ public class RoleServiceImp implements RoleService {
     }
 
     @Override
-    public void setUserRoles(User user){
+    public void setUserRoles(User user) {
         user.setRoles(user.getRoles().stream()
-                              .map(this::getRole).collect(Collectors.toSet()));
+                .map(this::getRole).collect(Collectors.toSet()));
     }
+
     @Override
-    public Role getRole(Role role){
+    public Role getRole(Role role) {
         return roleRepository.getById(role.getId());
     }
 
