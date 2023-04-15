@@ -40,6 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/api/admin*").hasRole("ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/user*").hasAnyRole("USER","ADMIN")
+                .antMatchers("/api/user/1").hasRole("ADMIN")
                 .anyRequest().authenticated();
 
         http.logout()
