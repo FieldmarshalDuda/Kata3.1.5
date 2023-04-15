@@ -16,7 +16,6 @@ public class UsersController {
     @GetMapping("")
     public String showUserPage(@AuthenticationPrincipal Details userdetails, Model model) {
         model.addAttribute("currentUser", userdetails.getUser());
-        model.addAttribute("roles", userdetails.getUser().getRoles());
         return "user";
     }
 }
