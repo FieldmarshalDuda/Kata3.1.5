@@ -1,10 +1,15 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.security.Details;
+import ru.kata.spring.boot_security.demo.service.UserDetailsServiceImp;
 import ru.kata.spring.boot_security.demo.service.UserService;
+
 
 import java.util.List;
 
@@ -16,7 +21,13 @@ public class AdminRestController {
     public AdminRestController(UserService userService) {
         this.userService = userService;
     }
-
+    @GetMapping("")
+    public ResponseEntity<User> getRestUser(@AuthenticationPrincipal Details details) {
+        System.out.println("Приложение начало работу метода getRestUser для adminPage");
+        User user = details.getUser();
+        System.out.println(user);
+        return ResponseEntity.ok(user);
+    }
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsersList() {
         System.out.println("Приложение начало работу метода getUsersList");

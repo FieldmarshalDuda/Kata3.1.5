@@ -5,6 +5,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "authorities")
@@ -25,5 +26,5 @@ public class Authority {
     private String name;
     @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
-    private List<Role> roles;
+    private Set<Role> roles;
 }
