@@ -1,6 +1,6 @@
 const url = "http://localhost:8080/api/user/"
 
-const currentUserId = document.querySelector("#user-nav-link").getAttribute("data")
+
 const userInfo = document.querySelector("#current-user-info")
 let usersTable = document.querySelector("#users-table")
 
@@ -14,12 +14,13 @@ const userFetch = {
         'Accept': 'application/json',
         'Content-Type': 'application/json; charset=UTF-8'
     },
-    getUser: async () => await fetch(url),
-  }
+    getAuthUser: async () => await fetch(url),
+}
 window.onload = () => {
     updateCurrentUserInfo()
     showUserPanel()
 }
+
 async function updateCurrentUserInfo() {
     await getCurrentUser().then(user => {
         const username = document.createElement("b")
@@ -39,12 +40,14 @@ async function updateCurrentUserInfo() {
         }
     })
 }
+
 async function getCurrentUser() {
     console.log("Работает метод getCurrentUser")
-    let response = await userFetch.getUser(currentUserId)
+    let response = await userFetch.getAuthUser()
     let user = await response.json()
     return user
 }
+
 function showUserPanel() {
     console.log("Работает метод showUserPanel")
     getCurrentUser().then(user => {
