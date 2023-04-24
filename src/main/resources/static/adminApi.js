@@ -1,6 +1,5 @@
 const url = "http://localhost:8080/api/admin/users/"
 
-const currentUserId = document.querySelector("#user-nav-link").getAttribute("data")
 const userInfo = document.querySelector("#current-user-info")
 let usersTable = document.querySelector("#users-table")
 const addUserForm = document.addUserForm
@@ -21,6 +20,7 @@ const userFetch = {
     },
     getUsersList: async () => await fetch(url),
     getUser: async (id) => await fetch(url + id),
+    getAuthUser: async () => await fetch(url + "getAuth"),
     createUser: async (user) => await fetch(url, {method: "POST", headers: userFetch.head, body: JSON.stringify(user)}),
     updateUser: async (user) => await fetch(url, {method: "PUT", headers: userFetch.head, body: JSON.stringify(user)}),
     deleteUser: async (id) => await fetch(url + id, {method: "DELETE"})
@@ -32,7 +32,6 @@ window.onload = () => {
     showAdminPanel()
     document.getElementById("submit-edit-user-btn").addEventListener("click", editUser)
 }
-
 
 async function updateCurrentUserInfo() {
     await getCurrentUser().then(user => {
@@ -56,8 +55,9 @@ async function updateCurrentUserInfo() {
 
 async function getCurrentUser() {
     console.log("Работает метод getCurrentUser")
-    let response = await userFetch.getUser(currentUserId)
+    let response = await userFetch.getAuthUser()
     let user = await response.json()
+    console.log(user)
     return user
 }
 
@@ -182,11 +182,11 @@ function addNewUser() {
                 id: 0,
                 name: ""
             }
-            if (name === "ROLE_ADMIN") {
+            if (name === "1") {
                 role.id = 1
                 role.name = "ADMIN"
             }
-            if (name === "ROLE_USER") {
+            if (name === "2") {
                 role.id = 2
                 role.name = "USER"
             }
@@ -223,8 +223,6 @@ function showEditUserForm(id) {
             $("#editModal").modal()
         })
 }
-
-
 
 
 function editUser() {

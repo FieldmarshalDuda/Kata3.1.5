@@ -9,6 +9,7 @@ import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -29,9 +30,11 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional
     public void saveUser(User user) {
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setRoles(user.getRoles());
-        userRepository.save(user);
+        if (userRepository.findByUsername(user.getUsername()).isEmpty()) {
+            user.setPassword(encoder.encode(user.getPassword()));
+            user.setRoles(user.getRoles());
+            userRepository.save(user);
+        } else throw new RuntimeException("Username already exists");
     }
 
     private String getEncodedPassword(User user) {
@@ -55,6 +58,11 @@ public class UserServiceImp implements UserService {
         userRepository.deleteById(id);
     }
 
+
+    @Override
+    public Optional<User> getByName(String name) {
+        return userRepository.findByUsername(name);
+    }
 
     @Override
     public User getById(Long id) {
